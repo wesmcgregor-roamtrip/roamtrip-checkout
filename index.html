@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Order RoamTrip Book</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:#071f18;color:#fffdf5;font-family:Arial,sans-serif;display:grid;place-items:center;padding:28px}.card{width:min(520px,100%);border:1px solid rgba(255,253,245,.16);background:rgba(255,253,245,.06);padding:34px}.eyebrow{color:#efa078;font-size:11px;font-weight:800;letter-spacing:2.4px}.title{font-family:Georgia,serif;font-size:38px;line-height:1.05;margin:12px 0 8px}.meta{color:rgba(255,253,245,.55);font-size:13px;margin-bottom:28px}.peecho-print-button{display:block!important;background:#e2763e!important;color:#fffdf5!important;text-align:center!important;text-decoration:none!important;padding:17px 20px!important;font-weight:900!important;letter-spacing:1.5px!important}.fine{color:rgba(255,253,245,.38);font-size:11px;line-height:1.5;margin-top:18px}.error{color:#efa078;line-height:1.5}
+  </style>
+</head>
+<body>
+  <main class="card" id="card"><div class="eyebrow">ROAMTRIP / PRINTED BY PEECHO</div><p>Preparing your book…</p></main>
+  <script type="application/javascript"><![CDATA[
+    (async function () {
+      const card = document.getElementById('card');
+      const query = new URLSearchParams(location.search);
+      const endpoint = new URL('https://atompxbjbxybivcmtvdu.supabase.co/functions/v1/peecho-checkout');
+      endpoint.searchParams.set('token', query.get('token') || '');
+      endpoint.searchParams.set('sig', query.get('sig') || '');
+      try {
+        const response = await fetch(endpoint);
+        if (!response.ok) throw new Error(await response.text());
+        const book = await response.json();
+        card.replaceChildren();
+        const eyebrow = document.createElement('div'); eyebrow.className = 'eyebrow'; eyebrow.textContent = 'ROAMTRIP / PRINTED BY PEECHO';
+        const title = document.createElement('div'); title.className = 'title'; title.textContent = book.title;
+        const meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = `A5 portrait · ${book.page_count} pages`;
+        const button = document.createElement('a');
+        button.className = 'peecho-print-button'; button.href = 'https://www.peecho.com/'; button.title = 'Order printed RoamTrip book'; button.textContent = 'ORDER PRINTED BOOK';
+        Object.entries({ filetype:'pdf', width:'148', height:'210', pages:String(book.page_count), src:book.pdf_url, reference:book.reference, locale:'en_EN', currency:'AUD', theme:'orange', text:'ORDER PRINTED BOOK' }).forEach(([key,value]) => button.dataset[key] = value);
+        const fine = document.createElement('div'); fine.className = 'fine'; fine.textContent = 'Payment, printing, shipping and customer checkout are handled securely by Peecho.';
+        card.append(eyebrow, title, meta, button, fine);
+        document.title = `Order ${book.title}`;
+        const script = document.createElement('script'); script.async = true; script.src = `https://d3aln0nj58oevo.cloudfront.net/button/script/${encodeURIComponent(book.button_key)}.js`; document.head.appendChild(script);
+      } catch (error) {
+        card.innerHTML = '<div class="eyebrow">ROAMTRIP / PRINTED BY PEECHO</div><p class="error"></p>';
+        card.querySelector('.error').textContent = error instanceof Error ? error.message : 'Unable to prepare checkout.';
+      }
+    }());
+  ]]></script>
+</body>
+</html>
