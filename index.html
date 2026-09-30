@@ -27,7 +27,9 @@
         const meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = `A5 portrait · ${book.page_count} pages`;
         const button = document.createElement('a');
         button.className = 'peecho-print-button'; button.href = 'https://www.peecho.com/'; button.title = 'Order printed RoamTrip book'; button.textContent = 'ORDER PRINTED BOOK';
-        Object.entries({ filetype:'pdf', width:'148', height:'210', pages:String(book.page_count), src:book.pdf_url, reference:book.reference, locale:'en_EN', currency:'AUD', theme:'orange', text:'ORDER PRINTED BOOK' }).forEach(([key,value]) => button.dataset[key] = value);
+        const options = { filetype:'pdf', width:'148', height:'210', pages:String(book.page_count), src:book.pdf_url, reference:book.reference, locale:'en_EN', currency:'AUD', theme:'orange', text:'ORDER PRINTED BOOK' };
+        if (book.thumbnail_url) options.thumbnail = book.thumbnail_url;
+        Object.entries(options).forEach(([key,value]) => button.dataset[key] = value);
         const fine = document.createElement('div'); fine.className = 'fine'; fine.textContent = 'Payment, printing, shipping and customer checkout are handled securely by Peecho.';
         card.append(eyebrow, title, meta, button, fine);
         document.title = `Order ${book.title}`;
